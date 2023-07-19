@@ -1,8 +1,12 @@
-const promptForEmail = require('./Components/emailPrompt');
+const { promptForURL, promptForEmail } = require('./Components/prompts');
 
-promptForEmail()
-  .then((email) => {
-    console.log('Email address:', email);
+promptForURL()
+  .then((url) => {
+    console.log('URL:', url);
+    return promptForEmail()
+      .then((email) => {
+        console.log('Email address:', email);
+      });
   })
   .catch((error) => {
     console.error('Error:', error);
