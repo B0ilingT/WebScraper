@@ -1,0 +1,15 @@
+{
+  "name": "webscraper",
+  "version": "1.0.0",
+  "description": "Node.js console based web-scraper for CANDDi",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tom Boiling",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "knwl.js": "github:loadfive/Knwl.js"
+  }
+}
