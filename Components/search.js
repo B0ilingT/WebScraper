@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 
-async function searchGoogle(email) {
+async function searchGoogle(email) { // I know this isnt strictly neccesary but it is now used as a check for http or https
   try {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(email)}`;
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: "new" });
     const page = await browser.newPage();
     await page.goto(searchUrl);
 
@@ -13,14 +13,15 @@ async function searchGoogle(email) {
     await browser.close();
 
     const $ = cheerio.load(html);
+    const domain = extractDomain(email);
 
     const searchResults = [];
 
     $('div.g').each((index, element) => {
       const header = $(element).find('h3').text();
       const url = $(element).find('a').attr('href');
-      if (header && url) {
-        searchResults.push({ header, url });
+      if (header && url && url.includes(domain)) {
+        searchResults.push({url});
       }
     });
 
@@ -30,13 +31,14 @@ async function searchGoogle(email) {
     throw error;
   }
 }
+
 function extractDomain(email) {
   const regex = /@([^\s@]+)$/; // Regular expression to match the domain after the @ symbol
   const match = email.match(regex);
   if (match && match.length > 1) {
     return match[1]; // Return the domain part of the email
   }
-  return ''; // Return an empty string if the domain couldn't be extracted
+  return ''; 
 }
 
-module.exports = { searchGoogle, extractDomain };
+module.exports = {searchGoogle, extractDomain};
