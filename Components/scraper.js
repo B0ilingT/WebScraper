@@ -3,7 +3,7 @@ const https = require('https');
 const cheerio = require('cheerio');
 const Knwl = require('knwl.js');
 
-async function scrapeCompanyInfo(url) {
+async function fetchPage(url) {
   try {
     const protocol = url.startsWith('https') ? https : http;
 
@@ -22,39 +22,70 @@ async function scrapeCompanyInfo(url) {
       });
     });
 
-    const $ = cheerio.load(response);
-
-    const companyInfo = {
-      phoneNumbers: [],
-     // addresses: [],
-      emails: []
-    };
-
-    const knwlInstance = new Knwl();
-
-    knwlInstance.register('phones', require('knwl.js/default_plugins/phones'));
-    knwlInstance.register('emails', require('knwl.js/default_plugins/emails'));
-
-    knwlInstance.init($('body').text());
-    
-    companyInfo.phoneNumbers = knwlInstance.get('phones');
-    //companyInfo.addresses = extractAddresses($);
-    companyInfo.emails = knwlInstance.get('emails');
-
-    return companyInfo;
+    return response;
   } catch (error) {
     console.error('Error:', error);
     throw error;
   }
 }
 
-function extractAddresses($) {
-  const addresses = [];
-  $('address').each((index, element) => {
-    const address = $(element).text().trim();
-    addresses.push(address);
+async function scrapeCompanyInfo(url) {
+  const companyInfo = {
+    emails: new Set() // used set to only obtain unique emails
+  };
+  const $ = cheerio.load(await fetchPage(url));
+  const knwlInstance = new Knwl();
+
+  knwlInstance.register('emails', require('knwl.js/default_plugins/emails'));
+
+  knwlInstance.init($.html());
+
+  const emails = knwlInstance.get('emails');
+  emails.forEach((email) => {
+    companyInfo.emails.add(email.address);
   });
-  return addresses;
+  return [...companyInfo.emails]; // Return the unique emails as an array
 }
 
-module.exports = { scrapeCompanyInfo };
+async function scrapePages(url) {
+  const visitedUrls = new Set();
+  const scrapedData = new Set();
+
+  const domain = new URL(url).origin;
+
+  async function crawl(url) {
+    const targetDomain = new URL(url).origin;
+    if (targetDomain !== domain) {
+      return;
+    }
+
+    if (visitedUrls.has(url)) {
+      return;
+    }
+    console.log(url);
+    visitedUrls.add(url);
+
+    const companyInfo = await scrapeCompanyInfo(url); // Call the function to get only the emails
+    companyInfo.forEach((email) => {
+      scrapedData.add(email);
+    });
+
+    const $ = cheerio.load(await fetchPage(url));
+    const links = $('a');
+
+    const crawlPromises = links.map(async (index, element) => {
+      const href = $(element).attr('href');
+      if (href) {
+        const absoluteUrl = new URL(href, url).href;
+        await crawl(absoluteUrl);
+      }
+    }).get();
+
+    await Promise.all(crawlPromises);
+  }
+
+  await crawl(url);
+  return [...scrapedData]; // Return the unique emails as an array
+}
+
+module.exports = { scrapePages };
