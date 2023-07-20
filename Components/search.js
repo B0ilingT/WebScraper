@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
 
-async function searchGoogle(email) { // I know this isnt strictly neccesary but it is now used as a check for http or https
+async function searchGoogle(email) { // I know this isnt strictly neccesary but it is now used as a check for http or https and because Google returns dynamic code depending on device
   try {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(email)}`;
 

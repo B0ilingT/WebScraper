@@ -13,4 +13,7 @@ promptForEmail()
   })
   .catch((error) => {
     console.error('Error:', error);
+    if (error.code === 'ECONNRESET'){
+      
+    }
   });

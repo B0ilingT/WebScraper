@@ -12,6 +12,7 @@
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
     "knwl.js": "github:loadfive/Knwl.js",
+    "postcode-validator": "^3.8.12",
     "puppeteer": "^20.8.3"
   }
 }
