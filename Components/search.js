@@ -5,7 +5,7 @@ async function searchGoogle(email) { // I know this isnt strictly neccesary but 
   try {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(email)}`;
 
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await puppeteer.launch({ headless: "new" }); // this is slower than other methods but is used for reasons stated earlier
     const page = await browser.newPage();
     await page.goto(searchUrl);
 
@@ -21,7 +21,7 @@ async function searchGoogle(email) { // I know this isnt strictly neccesary but 
       const header = $(element).find('h3').text();
       const url = $(element).find('a').attr('href');
       if (header && url && url.includes(domain)) {
-        searchResults.push({url});
+        searchResults.push({header, url});
       }
     });
 
@@ -41,4 +41,4 @@ function extractDomain(email) {
   return ''; 
 }
 
-module.exports = {searchGoogle, extractDomain};
+module.exports = {searchGoogle};

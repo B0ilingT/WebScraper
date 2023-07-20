@@ -3,7 +3,6 @@ const https = require('https');
 const cheerio = require('cheerio');
 const Knwl = require('knwl.js');
 const numbersToCheck = require('./numbersToCheck.json');
-const UKAddresses = require('./addresses'); 
 
 
 async function fetchPage(url) {
@@ -32,68 +31,7 @@ async function fetchPage(url) {
   }
 }
 
-async function scrapeCompanyInfo(url) {
-  const companyInfo = {
-    emails: new Set(), // used set to only obtain unique data points
-    phoneNumbers: new Set(),
-    addresses: new Set()
-  };
-  const $ = cheerio.load(await fetchPage(url));
-  const knwlInstance = new Knwl();
-
-  knwlInstance.register('emails', require('knwl.js/default_plugins/emails'));
-  knwlInstance.register('phones', require('knwl.js/experimental_plugins/internationalPhones'));
-  //knwlInstance.register('addresses', UKAddresses);
-
-  knwlInstance.init($.html());
-
-  const emails = knwlInstance.get('emails');
-  emails.forEach((email) => {
-    companyInfo.emails.add(email.address);
-  });
-
-  
-  const addrRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
-  $('span, div').each((index, element) => {
-    const text = $(element).text();
-    const matches = text.match(addrRegex);
-    if (matches) {
-      matches.forEach((match) => {
-        if (match) {
-          const postcodeIndex = (text.indexOf(match));
-          let addressStartIndex = postcodeIndex;
-          let comma = false;
-          let space = 0;
-          for (let i = postcodeIndex  - 1; i >= 0; i--) { //this is a really dirty way of getting most of the address data
-            if( text[i]=== ' ' && space === 1 || text[i] == '' && space === 1 ){
-              addressStartIndex = i + 1;
-              break;
-            }   
-            if( text[i]=== ' ' && comma == true){
-              space++;
-            }            
-             else if (text[i] === ','){
-              comma = true;
-             }
-          }
-          const addressText = text.substring(addressStartIndex, postcodeIndex);
-
-          // Check if a longer version is already present in the set
-          let isShorterVersion = false;
-          for (const address of companyInfo.addresses) {
-            if (address.includes(match) && address.length > match.length) {
-              isShorterVersion = true;
-              break;
-            }
-          }
-          if (!isShorterVersion) {
-            companyInfo.addresses.add(addressText + match);
-          }
-        }
-      });
-    }
-  });
-    
+function scrapePhoneNumbers(knwlInstance, companyInfo)  {
   const phones = knwlInstance.get('phones');
   phones.forEach((phone) => {
     if (phone.number.startsWith('+44')) {
@@ -106,7 +44,84 @@ async function scrapeCompanyInfo(url) {
       }     
     }
   });
+  return companyInfo.phoneNumbers;
+}
 
+function scrapeEmails(knwlInstance, companyInfo) {
+  const emails = knwlInstance.get('emails');
+  emails.forEach((email) => {
+    companyInfo.emails.add(email.address);
+  });
+  return companyInfo.emails;
+}
+
+
+function scrapeAddresses($, companyInfo) {
+  const addrRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
+  
+  $('span, div').each((index, element) => {
+    const text = $(element).text();
+    const matches = text.match(addrRegex);
+    
+    if (matches) {
+      matches.forEach((match) => {
+        if (match) {
+          const postcodeIndex = text.indexOf(match);
+          let addressStartIndex = postcodeIndex;
+          let comma = false;
+          let space = 0;
+          
+          for (let i = postcodeIndex - 1; i >= 0; i--) { // I know this isn't the most efficient way of doing this. A better way for recognising addresses may be needed
+            if (text[i] === ' ' && space === 1 || text[i] === '' && space === 1) {
+              addressStartIndex = i + 1;
+              break;
+            }
+            if (text[i] === ' ' && comma === true) {
+              space++;
+            } else if (text[i] === ',') {
+              comma = true;
+            }
+          }
+          
+          const addressText = text.substring(addressStartIndex, postcodeIndex);
+  
+          // Check if a longer version is already present in the set
+          let isShorterVersion = false;
+          for (const address of companyInfo.addresses) {
+            if (address.includes(match) && address.length > match.length) {
+              isShorterVersion = true;
+              break;
+            }
+          }
+  
+          if (!isShorterVersion) {
+            companyInfo.addresses.add(addressText + match);
+          }
+        }
+      });
+    }
+  });
+  return companyInfo.addresses;
+}
+
+async function scrapeCompanyInfo(url) {
+  const companyInfo = {
+    emails: new Set(), // used set to only obtain unique data points
+    phoneNumbers: new Set(),
+    addresses: new Set()
+  };
+  const $ = cheerio.load(await fetchPage(url));
+  const knwlInstance = new Knwl();
+
+  knwlInstance.register('emails', require('knwl.js/default_plugins/emails'));
+  knwlInstance.register('phones', require('knwl.js/experimental_plugins/internationalPhones'));
+
+  knwlInstance.init($.html());
+
+  companyInfo.addresses = scrapeAddresses($,companyInfo);
+  companyInfo.phoneNumbers = scrapePhoneNumbers(knwlInstance, companyInfo); 
+  companyInfo.emails = scrapeEmails(knwlInstance, companyInfo); 
+  
   return {
     emails: [...companyInfo.emails],
     phoneNumbers: [...companyInfo.phoneNumbers],
@@ -114,8 +129,9 @@ async function scrapeCompanyInfo(url) {
   };
 }
 
-async function scrapePages(url) {
+async function scrapePages(url) { // change this to find all websites and then scrape
   const visitedUrls = new Set();
+
   const scrapedData = {
     emails: new Set(),
     phoneNumbers: new Set(),
@@ -136,7 +152,8 @@ async function scrapePages(url) {
     console.log(url);
     visitedUrls.add(url);
 
-    const companyInfo = await scrapeCompanyInfo(url); // Call the function to get only the emails
+    const companyInfo = await scrapeCompanyInfo(url);
+
     companyInfo.emails.forEach((email) => {
       scrapedData.emails.add(email);
     });
@@ -160,9 +177,8 @@ async function scrapePages(url) {
 
     await Promise.all(crawlPromises);
   }
-
   await crawl(url);
-  return scrapedData; // Return the unique emails as an array
+  return scrapedData; // Return the unique data
 }
 
-module.exports = { scrapePages };
+module.exports = {scrapePages};
