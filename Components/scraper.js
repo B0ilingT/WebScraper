@@ -2,6 +2,8 @@ const http = require('http');
 const https = require('https');
 const cheerio = require('cheerio');
 const Knwl = require('knwl.js');
+const numbersToCheck = require('./numbersToCheck.json');
+
 
 async function fetchPage(url) {
   try {
@@ -31,12 +33,14 @@ async function fetchPage(url) {
 
 async function scrapeCompanyInfo(url) {
   const companyInfo = {
-    emails: new Set() // used set to only obtain unique emails
+    emails: new Set(), // used set to only obtain unique emails
+    phoneNumbers: new Set()
   };
   const $ = cheerio.load(await fetchPage(url));
   const knwlInstance = new Knwl();
 
   knwlInstance.register('emails', require('knwl.js/default_plugins/emails'));
+  knwlInstance.register('phones', require('knwl.js/experimental_plugins/internationalPhones'));
 
   knwlInstance.init($.html());
 
@@ -44,12 +48,32 @@ async function scrapeCompanyInfo(url) {
   emails.forEach((email) => {
     companyInfo.emails.add(email.address);
   });
-  return [...companyInfo.emails]; // Return the unique emails as an array
+
+  const phones = knwlInstance.get('phones');
+  phones.forEach((phone) => {
+    if (phone.number.startsWith('+44')) {
+      const replacedNumber = phone.number.replace(/^\+44/, '0');
+      // Check if the replaced number starts with '07' or is included in numbersToCheck
+      const isNumberValid = replacedNumber.startsWith('07') || numbersToCheck.some((num) => replacedNumber.includes(num.number));
+
+      if (isNumberValid) {
+        companyInfo.phoneNumbers.add(replacedNumber);
+      }     
+    }
+  });
+
+  return {
+    emails: [...companyInfo.emails],
+    phoneNumbers: [...companyInfo.phoneNumbers]
+  };
 }
 
 async function scrapePages(url) {
   const visitedUrls = new Set();
-  const scrapedData = new Set();
+  const scrapedData = {
+    emails: new Set(),
+    phoneNumbers: new Set()
+  };
 
   const domain = new URL(url).origin;
 
@@ -66,8 +90,11 @@ async function scrapePages(url) {
     visitedUrls.add(url);
 
     const companyInfo = await scrapeCompanyInfo(url); // Call the function to get only the emails
-    companyInfo.forEach((email) => {
-      scrapedData.add(email);
+    companyInfo.emails.forEach((email) => {
+      scrapedData.emails.add(email);
+    });
+    companyInfo.phoneNumbers.forEach((phone) => {
+      scrapedData.phoneNumbers.add(phone);
     });
 
     const $ = cheerio.load(await fetchPage(url));
@@ -85,7 +112,7 @@ async function scrapePages(url) {
   }
 
   await crawl(url);
-  return [...scrapedData]; // Return the unique emails as an array
+  return scrapedData; // Return the unique emails as an array
 }
 
 module.exports = { scrapePages };
