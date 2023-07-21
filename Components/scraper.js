@@ -50,52 +50,41 @@ function scrapePhoneNumbers(knwlInstance, companyInfo)  {
 function scrapeEmails(knwlInstance, companyInfo) {
   const emails = knwlInstance.get('emails');
   emails.forEach((email) => {
-    companyInfo.emails.add(email.address);
+    const lowercaseEmail = email.address.toLowerCase(); // lowercase to remove duplicates with different capitalisation
+    companyInfo.emails.add(lowercaseEmail);
   });
   return companyInfo.emails;
 }
 
 
 function scrapeAddresses($, companyInfo) {
-  const addrRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/;
+  const addrRegex = /([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})/; // postcode regex
   
   $('span, div').each((index, element) => {
-    const text = $(element).text();
+    const $element = $(element);
+    const text = $element.text();
     const matches = text.match(addrRegex);
     
     if (matches) {
       matches.forEach((match) => {
         if (match) {
-          const postcodeIndex = text.indexOf(match);
-          let addressStartIndex = postcodeIndex;
-          let comma = false;
-          let space = 0;
-          
-          for (let i = postcodeIndex - 1; i >= 0; i--) { // I know this isn't the most efficient way of doing this. A better way for recognising addresses may be needed
-            if (text[i] === ' ' && space === 1 || text[i] === '' && space === 1) {
-              addressStartIndex = i + 1;
-              break;
-            }
-            if (text[i] === ' ' && comma === true) {
-              space++;
-            } else if (text[i] === ',') {
-              comma = true;
-            }
+          const $p = $('p:contains(' + match + ')');
+          addressText = $p.parents('div').first().text().trim();
+          cleanedAddressText = addressText.replace(/\n/g, ''); // Remove newline characters from the address  
+
+          if (cleanedAddressText.length > 100) { // handles extra text in container with address, higher efficiency than filtering methods used in previous iterations
+            cleanedAddressText = match;
           }
-          
-          const addressText = text.substring(addressStartIndex, postcodeIndex);
-  
-          // Check if a longer version is already present in the set
-          let isShorterVersion = false;
+          let isDuplicate = false; // Check if a duplicate version is already present in the set
           for (const address of companyInfo.addresses) {
-            if (address.includes(match) && address.length > match.length) {
-              isShorterVersion = true;
+            if (address.trim().toLowerCase().includes(match.trim().toLowerCase())) {
+              isDuplicate = true;
               break;
             }
           }
-  
-          if (!isShorterVersion) {
-            companyInfo.addresses.add(addressText + match);
+
+          if (!isDuplicate) {
+            companyInfo.addresses.add(cleanedAddressText);
           }
         }
       });
@@ -122,6 +111,11 @@ async function scrapeCompanyInfo(url) {
   companyInfo.phoneNumbers = scrapePhoneNumbers(knwlInstance, companyInfo); 
   companyInfo.emails = scrapeEmails(knwlInstance, companyInfo); 
   
+  // removes null entries
+  companyInfo.emails.delete('');
+  companyInfo.phoneNumbers.delete('');
+  companyInfo.addresses.delete('');
+  
   return {
     emails: [...companyInfo.emails],
     phoneNumbers: [...companyInfo.phoneNumbers],
@@ -140,7 +134,7 @@ async function scrapePages(url) { // change this to find all websites and then s
 
   const domain = new URL(url).origin;
 
-  async function crawl(url) {
+  async function crawl(url) { // nested function not the best for readability/ doesnt follow code practices but this is here for simplicity of use
     const targetDomain = new URL(url).origin;
     if (targetDomain !== domain) {
       return;

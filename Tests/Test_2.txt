@@ -1,0 +1,26 @@
+PS E:\CANDDi\Technical Interview\WebScraper> node index.js
+Enter email address: info@abbottfireprotection.co.uk
+Found Website: {
+  header: 'Abbott Fire | Fire Extinguisher servicing in Tameside, Greater ...',
+  url: 'https://www.abbottfireprotection.co.uk/'
+}
+https://www.abbottfireprotection.co.uk/
+https://www.abbottfireprotection.co.uk/services
+https://www.abbottfireprotection.co.uk/resources       
+https://www.abbottfireprotection.co.uk/terms-conditions
+https://www.abbottfireprotection.co.uk/privacy-policy  
+https://www.abbottfireprotection.co.uk/_files/ugd/c0eb73_b147c9b069824193941c715d97e912b8.pdf
+{
+  emails: Set(2) {
+    'info@abbottfireprotection.co.uk',
+    '605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com'
+  },
+  phoneNumbers: Set(5) {
+    '0161258XXXX',
+    '0161582XXXX',
+    '0780924XXXX',
+    '0123455XXXX',
+    '0281305XXXX'
+  },
+  addresses: Set(1) { 'King Street, Dukinfield,Cheshire, SK16 XXX' }
+}

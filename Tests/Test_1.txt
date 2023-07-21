@@ -1,0 +1,98 @@
+PS E:\CANDDi\Technical Interview\WebScraper> node index.js
+Enter email address: reception@fletchersca.co.uk
+Found Website: {
+  header: 'Fletchers Chartered Accountants: Accountants | TamesideContact | Fletchers Chartered Accountants | Tameside',
+  url: 'https://www.fletchersca.co.uk/'
+}
+https://www.fletchersca.co.uk/
+https://www.fletchersca.co.uk/about
+https://www.fletchersca.co.uk/covid-19
+https://www.fletchersca.co.uk/covid-19-job-retention-scheme
+https://www.fletchersca.co.uk/covid-19-cbils
+https://www.fletchersca.co.uk/services
+https://www.fletchersca.co.uk/team
+https://www.fletchersca.co.uk/contact
+https://www.fletchersca.co.uk/blog
+https://www.fletchersca.co.uk/useful-links
+https://www.fletchersca.co.uk/testimonials
+https://www.fletchersca.co.uk/#comp-j8x33tg4
+https://www.fletchersca.co.uk/#comp-j8x3g406
+https://www.fletchersca.co.uk/#comp-j8x3g5xp
+https://www.fletchersca.co.uk/#comp-j96y3dmk
+https://www.fletchersca.co.uk/#comp-j96ybon1
+https://www.fletchersca.co.uk/_files/ugd/8fd834_548e5ad6e2a0459aba5c5c7f62f6e45b.pdf
+https://www.fletchersca.co.uk/single-post/covid-support-job-retention-scheme
+https://www.fletchersca.co.uk/single-post/support-for-businesses-through-covid-19-business-interruption-loan-scheme-cbils
+https://www.fletchersca.co.uk/single-post/2019/09/11/vat-construction-industry-reverse-charge-delayed-for-1-year
+https://www.fletchersca.co.uk/single-post/2019/06/21/payment-on-account-self-assessment
+https://www.fletchersca.co.uk/single-post/2019/06/03/vat-thecliff-edge
+https://www.fletchersca.co.uk/blog/page/2
+https://www.fletchersca.co.uk/blog/page/3
+https://www.fletchersca.co.uk/blog/page/4
+https://www.fletchersca.co.uk/single-post/2018/05/22/making-tax-digital
+https://www.fletchersca.co.uk/single-post/2018/03/22/pension-contribution-increase-will-this-affect-you
+https://www.fletchersca.co.uk/single-post/2018/07/12/sa-payment
+https://www.fletchersca.co.uk/single-post/2018/03/14/clients-be-warnedcalling-around-lunchtime-could-be-risky
+https://www.fletchersca.co.uk/single-post/2018/03/11/happy-mothers-day
+https://www.fletchersca.co.uk/blog/archive/2020/04
+https://www.fletchersca.co.uk/blog/archive/2019/09
+https://www.fletchersca.co.uk/blog/archive/2019/06
+https://www.fletchersca.co.uk/blog/archive/2018/07
+https://www.fletchersca.co.uk/blog/archive/2018/05
+https://www.fletchersca.co.uk/blog/archive/2018/03
+https://www.fletchersca.co.uk/blog/archive/2017/12
+https://www.fletchersca.co.uk/blog/archive/2017/11
+https://www.fletchersca.co.uk/blog/archive/2017/10
+https://www.fletchersca.co.uk/single-post/2017/12/20/new-hmrc-penalty-system
+https://www.fletchersca.co.uk/single-post/2017/12/12/flowers
+https://www.fletchersca.co.uk/blog/hashtags/HMRC
+https://www.fletchersca.co.uk/blog/hashtags/SelfAssessment
+https://www.fletchersca.co.uk/single-post/2018/03/14/autumn-budget-2017-small-business-edition
+https://www.fletchersca.co.uk/single-post/2017/11/25/autumn-budget-2017-landlord-edition
+https://www.fletchersca.co.uk/single-post/2017/11/13/still-using-post-office-to-pay-your-taxes
+https://www.fletchersca.co.uk/single-post/2017/10/18/the-world-s-most-valuable-resource-is-no-longer-oil-but-data
+https://www.fletchersca.co.uk/single-post/2017/10/18/why-eu-withdrawal-bill-delay-matters
+https://www.fletchersca.co.uk/blog/hashtags/Pension
+https://www.fletchersca.co.uk/blog/hashtags/MTD
+https://www.fletchersca.co.uk/blog/hashtags/VAT
+https://www.fletchersca.co.uk/blog/hashtags/Customers
+https://www.fletchersca.co.uk/blog/hashtags/Budget
+{
+  emails: Set(6) {
+    'reception@fletchersca.co.uk',
+    '605a7baede844d278b89dc95ae0a9123@sentry-next.wixpress.com',
+    '1eeb89147c984dc6bc3ffafd9e6cd089@sentry.wixpress.com',
+    '8eb368c655b84e029ed79ad7a5c1718e@sentry.wixpress.com',
+    'XXXX@fletchersca.co.uk',
+    'XXXXXXX@fletchersca.co.uk'
+  },
+  phoneNumbers: Set(26) {
+    '0161330XXXX',
+    '0721180XXXX',
+    '0241460XXXX',
+    '0201601XXXX',
+    '080098XXXX',
+    '0120001XXXX',
+    '0200908XXXX',
+    '0200100XXXX',
+    '0201516XXXX',
+    '0198582XXXX',
+    '0780924XXXX',
+    '0123455XXXX',
+    '0203408XXXX',
+    '0200000XXXX',
+    '0200752XXXX',
+    '0188619XXXX',
+    '0737022XXXX',
+    '0781202XXXX',
+    '0901624XXXX',
+    '0122529XXXX',
+    '0901359XXXX',
+    '0901402XXXX',
+    '0901404XXXX',
+    '0901536XXXX',
+    '0901630XXXX',
+    '0115001XXXX'
+  },
+  addresses: Set(1) { 'XXX-XXX King St, Dukinfield SK16 XXX, Cheshire, UK' }
+}

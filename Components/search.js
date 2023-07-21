@@ -20,7 +20,8 @@ async function searchGoogle(email) { // I know this isnt strictly neccesary but 
     $('div.g').each((index, element) => {
       const header = $(element).find('h3').text();
       const url = $(element).find('a').attr('href');
-      if (header && url && url.includes(domain)) {
+      const snippet = $(element).find(".lyLwlc").text(); // googles 'snippet' tag     
+      if (header && url && url.includes(domain) || header && url && snippet.includes(email)) { // handles edge case where generic email is used like @gmail.com
         searchResults.push({header, url});
       }
     });

@@ -1,0 +1,53 @@
+PS E:\CANDDi\Technical Interview\WebScraper> node index.js
+Enter email address: info@fawleyelectrical.co.uk
+Found Website: {
+  header: 'Fawley Electrical: Commercial & industrial electrical installationContact Fawley Electrical | Commercial and Industrial',
+  url: 'https://www.fawleyelectrical.co.uk/'
+}
+https://www.fawleyelectrical.co.uk/
+https://www.fawleyelectrical.co.uk/contact-us/
+https://www.fawleyelectrical.co.uk/about-us/    
+https://www.fawleyelectrical.co.uk/testimonials/
+https://www.fawleyelectrical.co.uk/commercial/  
+https://www.fawleyelectrical.co.uk/industrial/  
+https://www.fawleyelectrical.co.uk/inspection-and-testing/
+https://www.fawleyelectrical.co.uk/electrical-maintenance/
+https://www.fawleyelectrical.co.uk/health-and-safety/
+https://www.fawleyelectrical.co.uk/#startContent
+https://www.fawleyelectrical.co.uk/privacy/
+https://www.fawleyelectrical.co.uk/cookies/
+https://www.fawleyelectrical.co.uk/inspection-and-testing/Electricity%20at%20Work%20Regulations
+https://www.fawleyelectrical.co.uk/cookies/#w-cookies-1
+https://www.fawleyelectrical.co.uk/cookies/#w-cookies-2
+https://www.fawleyelectrical.co.uk/cookies/#w-cookies-3
+https://www.fawleyelectrical.co.uk/cookies/#w-cookies-4
+https://www.fawleyelectrical.co.uk/cookies/#w-cookies-4-1
+https://www.fawleyelectrical.co.uk/cookies/#w-cookies-4-2
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-1
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2-1
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2-2
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2-3
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2-4
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2-5
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-2-6
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-3
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-4
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-4-1
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-4-2
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-4-3
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-5
+https://www.fawleyelectrical.co.uk/privacy/#w-privacypolicy-5-1
+https://www.fawleyelectrical.co.uk/inspection-and-testing/Electricity%20at%20Work%20Regulations/
+{
+  emails: Set(1) { 'info@fawleyelectrical.co.uk' },
+  phoneNumbers: Set(6) {
+    '0190486XXXX',
+    '0286940XXXX',
+    '0720440XXXX',
+    '0200440XXXX',
+    '0200182XXXX',
+    '0710018XXXX'
+  },
+  addresses: Set(1) { 'SK16 XXX' }
+}
